@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Greedy Pig | Chinonso Ugwu</title>
+  <meta name="description" content="Greedy Pig: a push-your-luck dice game rebuilt by a CSC 419 team as a server-backed web app. I built the Play vs Computer game screen and keyboard play.">
+
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <!-- Fonts are self-hosted in /fonts and loaded inside style.css -->
+  <link rel="preload" href="fonts/press-start-2p-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- defer: scripts run after the HTML has loaded, in this order -->
+  <script src="js/sound.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
+<body data-page="project">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- 3D grid background: a tilted floor with slowly moving lines, fixed behind the page -->
+  <div class="bg-grid" aria-hidden="true">
+    <div class="bg-floor">
+      <div class="bg-lines"></div>
+    </div>
+  </div>
+
+  <!-- ========== Header and navigation ========== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html" aria-label="Chinonso Ugwu, home page">CU</a>
+
+      <nav aria-label="Main">
+        <ul class="nav-list">
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#projects">Projects</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Hidden until JavaScript loads, because it only works with JavaScript -->
+      <button class="sound-toggle" type="button" aria-pressed="true" hidden>Sound: on</button>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <!-- ========== Project title ========== -->
+    <section class="title-screen project-top" aria-labelledby="project-title">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="index.html#projects">Projects</a></li>
+            <li><span aria-current="page">Greedy Pig</span></li>
+          </ol>
+        </nav>
+
+        <p class="eyebrow">Slot 1 loaded</p>
+        <h1 id="project-title">Greedy Pig</h1>
+        <p class="lead">
+          A push-your-luck dice game my CSC 419 team rebuilt as a server-backed web app,
+          with pass-and-play for friends and a Play vs Computer mode with five difficulty levels.
+        </p>
+
+        <ul class="project-meta">
+          <li><span class="meta-label">Type</span> Team project, CSC 419 Advances in Web</li>
+          <li><span class="meta-label">When</span> November 2026</li>
+          <li><span class="meta-label">My role</span> Play vs Computer game screen and keyboard play</li>
+        </ul>
+
+        <div class="button-row">
+          <!-- TODO: when the team's final build is live, replace this line with:
+               <a class="btn btn-primary" href="LIVE_URL_HERE">Play live</a> -->
+          <p class="status">Live link coming soon</p>
+          <a class="btn" href="index.html#projects">Back to projects</a>
+        </div>
+
+        <figure class="project-shot">
+          <img src="images/greedy-pig/computer-turn.webp" width="1280" height="850"
+               alt="Greedy Pig game screen during the computer's turn. Hamlet (Medium) is thinking, the dice are covered with a Computer's turn label, and a robot badge marks Hamlet as a Medium computer player.">
+          <figcaption>The computer's turn: Hamlet is thinking, the dice are locked, and his badge shows his level.</figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- ========== Overview ========== -->
+    <section class="section" aria-labelledby="overview-heading">
+      <div class="container">
+        <div class="level-heading">
+          <span class="level-arrow" aria-hidden="true">&#9654;</span>
+          <div>
+            <h2 id="overview-heading">Overview</h2>
+            <p class="level-sub">Mission briefing</p>
+          </div>
+        </div>
+
+        <div class="panel prose">
+          <p>
+            Each turn you roll one die as many times as you dare. Every roll adds to your
+            turn score, but a 1 wipes it out and passes the turn. Press PASS to bank your
+            points. The first player to reach the target score wins.
+          </p>
+          <p>
+            We started from an older React version that kept the whole game in the browser.
+            Over one week, the team moved the rules to an Express and Supabase backend,
+            connected every screen to it, and added a computer opponent, power-ups and
+            keyboard shortcuts. We worked in feature branches with one pull request per
+            task, each reviewed by a teammate before merging.
+          </p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== The problem ========== -->
+    <section class="section" aria-labelledby="problem-heading">
+      <div class="container">
+        <div class="level-heading">
+          <span class="level-arrow" aria-hidden="true">&#9654;</span>
+          <div>
+            <h2 id="problem-heading">The problem</h2>
+            <p class="level-sub">Why it needed fixing</p>
+          </div>
+        </div>
+
+        <div class="panel prose">
+          <p>
+            The old game couldn't be trusted and couldn't be played alone. The browser
+            picked the dice, added up the scores and decided the winner, and you always
+            needed a second person.
+          </p>
+          <ul class="problem-list">
+            <li>
+              <strong>Fairness.</strong> With every rule in the browser, anyone could change
+              a score from DevTools. Now the server rolls the die, keeps the scores, switches
+              turns and decides the winner. The screens only show what the server says.
+            </li>
+            <li>
+              <strong>Lost games.</strong> A refresh used to wipe the game. Games now live on
+              the server and reload from their link.
+            </li>
+            <li>
+              <strong>Playing alone.</strong> There was no single-player mode. Play vs Computer
+              gives you an opponent at five levels, from Piglet (Very Easy) to Greedy King (Expert).
+            </li>
+            <li>
+              <strong>Following the computer.</strong> A computer that plays instantly is
+              confusing. My work shows what it's doing, keeps its last move on screen after
+              its turn, and marks it clearly as a computer.
+            </li>
+            <li>
+              <strong>Mouse-only play.</strong> Every roll and bank needed a click. My keyboard
+              shortcuts let you play the whole game from the keyboard.
+            </li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== My part ========== -->
+    <section class="section" aria-labelledby="mypart-heading">
+      <div class="container">
+        <div class="level-heading">
+          <span class="level-arrow" aria-hidden="true">&#9654;</span>
+          <div>
+            <h2 id="mypart-heading">My part</h2>
+            <p class="level-sub">Quests I completed</p>
+          </div>
+        </div>
+
+        <ul class="quest-grid">
+          <li class="panel quest">
+            <p class="quest-id">C2</p>
+            <h3>Computer turns on the game screen</h3>
+            <p>
+              The computer rolls and banks by itself. While it plays, the screen shows
+              "Hamlet is thinking", locks the dice, keeps a recap of its last move, and
+              offers a Retry button if the server stops answering.
+            </p>
+          </li>
+          <li class="panel quest">
+            <p class="quest-id">C4</p>
+            <h3>Computer badges and game over</h3>
+            <p>
+              A robot badge with the level, like "Medium", marks computer players everywhere
+              their name appears. The game-over screen says "You beat Hamlet (Medium)!" when
+              you win, or offers a Rematch, with no confetti when you lose.
+            </p>
+          </li>
+          <li class="panel quest">
+            <p class="quest-id">K1</p>
+            <h3>Keyboard shortcuts</h3>
+            <p>
+              R rolls, B banks, M toggles sound and ? opens a shortcuts help overlay. Keys
+              follow the same rules as the buttons and never fire while you're typing. I also
+              added a Keyboard Shortcuts section to the How To Play page.
+            </p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ========== Features ========== -->
+    <section class="section" aria-labelledby="features-heading">
+      <div class="container">
+        <div class="level-heading">
+          <span class="level-arrow" aria-hidden="true">&#9654;</span>
+          <div>
+            <h2 id="features-heading">Features</h2>
+            <p class="level-sub">What's in the cartridge</p>
+          </div>
+        </div>
+        <p class="section-intro">The game has eleven main features. I built the three marked "Me" and the team built the rest.</p>
+
+        <ul class="feature-list">
+          <li class="feature">
+            <h3>Server-side rules</h3>
+            <p>The server rolls the die, keeps scores, switches turns and picks the winner.</p>
+            <p class="built-by">Team</p>
+          </li>
+          <li class="feature">
+            <h3>Pass-and-play</h3>
+            <p>2 to 8 players share one screen, with pig avatars and a target score from 20 to 500.</p>
+            <p class="built-by">Team</p>
+          </li>
+          <li class="feature">
+            <h3>Play vs Computer</h3>
+            <p>Pick your pig and one of five computer levels, then play one-on-one.</p>
+            <p class="built-by">Team</p>
+          </li>
+          <li class="feature is-mine">
+            <h3>Computer turns on the game screen</h3>
+            <p>The computer plays by itself, shows that it's thinking, recaps its last move, locks the dice and offers Retry.</p>
+            <p class="built-by">Me (C2)</p>
+          </li>
+          <li class="feature">
+            <h3>Animated computer die</h3>
+            <p>The computer's rolls tumble on the on-screen die and land on the server's number.</p>
+            <p class="built-by">Team</p>
+          </li>
+          <li class="feature is-mine">
+            <h3>Computer badges and game over</h3>
+            <p>Robot badges show computer players and their level; the game-over screen is written for vs-computer games.</p>
+            <p class="built-by">Me (C4)</p>
+          </li>
+          <li class="feature is-mine">
+            <h3>Keyboard shortcuts</h3>
+            <p>R, B, M and ? play the game from the keyboard, following the same rules as the buttons.</p>
+            <p class="built-by">Me (K1)</p>
+          </li>
+          <li class="feature">
+            <h3>How To Play page</h3>
+            <p>Rules, the five computer levels, and a Keyboard Shortcuts section built from the same list the game uses.</p>
+            <p class="built-by">Team, shortcuts section by me</p>
+          </li>
+          <li class="feature">
+            <h3>Power-ups</h3>
+            <p>Bust with 10 or more turn points to earn one of four power-ups, up to 3 held, 1 per turn.</p>
+            <p class="built-by">Team</p>
+          </li>
+          <li class="feature">
+            <h3>Mock server</h3>
+            <p>A fake server inside the browser, so the frontend can be built and tested without the backend running.</p>
+            <p class="built-by">Team</p>
+          </li>
+          <li class="feature">
+            <h3>Phone layout</h3>
+            <p>A separate mobile layout for the dice, scores and leaderboard.</p>
+            <p class="built-by">Team, kept working in my tasks</p>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- ========== Screenshots ========== -->
+    <section class="section" aria-labelledby="shots-heading">
+      <div class="container">
+        <div class="level-heading">
+          <span class="level-arrow" aria-hidden="true">&#9654;</span>
+          <div>
+            <h2 id="shots-heading">Screenshots</h2>
+            <p class="level-sub">Captured in game</p>
+          </div>
+        </div>
+        <p class="section-intro">Taken from the game running in mock mode, on a desktop screen and in a 375px phone view. Select any screenshot to see it full size.</p>
+
+        <div class="shot-grid">
+          <figure class="shot">
+            <a href="images/greedy-pig/turn-recap-phone.webp">
+              <img src="images/greedy-pig/turn-recap-phone.webp" width="390" height="865" loading="lazy"
+                   alt="Greedy Pig on a phone. A red banner at the top says Hamlet (CPU) rolled a 1, bust, it's Duchess's turn.">
+            </a>
+            <figcaption><span class="shot-tag">C2</span> The turn recap on a phone: after Hamlet rolls a 1, a red recap stays at the top.</figcaption>
+          </figure>
+
+          <figure class="shot">
+            <a href="images/greedy-pig/you-win-phone.webp">
+              <img src="images/greedy-pig/you-win-phone.webp" width="390" height="850" loading="lazy"
+                   alt="Greedy Pig win screen on a phone with confetti. It says Sugar Wins and You beat Hamlet (Medium), with Play Again and Home buttons.">
+            </a>
+            <figcaption><span class="shot-tag">C4</span> You win, on a phone: confetti, "You beat Hamlet (Medium)!" and Play Again.</figcaption>
+          </figure>
+
+          <figure class="shot shot-wide">
+            <a href="images/greedy-pig/computer-wins.webp">
+              <img src="images/greedy-pig/computer-wins.webp" width="1280" height="850" loading="lazy"
+                   alt="Greedy Pig game-over screen when the computer wins. A boxing pig says Hamlet (CPU) Wins, So close, try again or pick an easier pig, with Rematch and Home buttons.">
+            </a>
+            <figcaption><span class="shot-tag">C4</span> The computer wins: a "So close!" line and a Rematch button that goes back to the vs-computer setup.</figcaption>
+          </figure>
+
+          <figure class="shot shot-wide">
+            <a href="images/greedy-pig/shortcuts-help.webp">
+              <img src="images/greedy-pig/shortcuts-help.webp" width="1280" height="850" loading="lazy"
+                   alt="Keyboard shortcuts overlay over the Greedy Pig game, listing R to roll, B to bank, 1 to 3 for power-ups, M for sound and question mark for help.">
+            </a>
+            <figcaption><span class="shot-tag">K1</span> Keyboard shortcuts help: press ? during a game; Esc, ?, Close or a click outside closes it.</figcaption>
+          </figure>
+
+          <figure class="shot shot-wide">
+            <a href="images/greedy-pig/how-to-play-shortcuts.webp">
+              <img src="images/greedy-pig/how-to-play-shortcuts.webp" width="1280" height="900" loading="lazy"
+                   alt="The How To Play page showing the Expert computer level and a Keyboard Shortcuts section with the same keys as the in-game help.">
+            </a>
+            <figcaption><span class="shot-tag">K1</span> How To Play, Keyboard Shortcuts section: built from the same list as the in-game help.</figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <!-- ========== Technologies ========== -->
+    <section class="section" aria-labelledby="tech-heading">
+      <div class="container">
+        <div class="level-heading">
+          <span class="level-arrow" aria-hidden="true">&#9654;</span>
+          <div>
+            <h2 id="tech-heading">Tech stack</h2>
+            <p class="level-sub">Loadout</p>
+          </div>
+        </div>
+
+        <table class="tech-table">
+          <caption class="visually-hidden">Technologies used in Greedy Pig and what each was used for</caption>
+          <thead>
+            <tr>
+              <th scope="col">Area</th>
+              <th scope="col">Technology</th>
+              <th scope="col">Used for</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td data-label="Area">Frontend</td>
+              <td data-label="Technology">React 18 (hooks, Context)</td>
+              <td data-label="Used for">Every screen and the shared game state</td>
+            </tr>
+            <tr>
+              <td data-label="Area">Frontend</td>
+              <td data-label="Technology">Vite 4</td>
+              <td data-label="Used for">Dev server and production build</td>
+            </tr>
+            <tr>
+              <td data-label="Area">Frontend</td>
+              <td data-label="Technology">React Router 6</td>
+              <td data-label="Used for">Pages such as the game screen and the vs-computer setup</td>
+            </tr>
+            <tr>
+              <td data-label="Area">Frontend</td>
+              <td data-label="Technology">Tailwind CSS 3</td>
+              <td data-label="Used for">All styling, including the phone layout</td>
+            </tr>
+            <tr>
+              <td data-label="Area">Backend</td>
+              <td data-label="Technology">Node.js and Express</td>
+              <td data-label="Used for">The game API: create game, get game, roll, bank, power-ups</td>
+            </tr>
+            <tr>
+              <td data-label="Area">Database</td>
+              <td data-label="Technology">Supabase (PostgreSQL)</td>
+              <td data-label="Used for">Stores games, players and power-ups</td>
+            </tr>
+            <tr>
+              <td data-label="Area">Testing</td>
+              <td data-label="Technology">Mock game API in the browser</td>
+              <td data-label="Used for">Building and testing the frontend without the backend</td>
+            </tr>
+            <tr>
+              <td data-label="Area">Quality</td>
+              <td data-label="Technology">ESLint</td>
+              <td data-label="Used for">No new lint errors allowed in a pull request</td>
+            </tr>
+            <tr>
+              <td data-label="Area">Teamwork</td>
+              <td data-label="Technology">Git and GitHub pull requests</td>
+              <td data-label="Used for">One branch per task, reviewed and squash-merged into main</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <!-- ========== What I learned ========== -->
+    <section class="section" aria-labelledby="learned-heading">
+      <div class="container">
+        <div class="level-heading">
+          <span class="level-arrow" aria-hidden="true">&#9654;</span>
+          <div>
+            <h2 id="learned-heading">What I learned</h2>
+            <p class="level-sub">Experience gained</p>
+          </div>
+        </div>
+
+        <ol class="learned-list">
+          <li class="panel learned">
+            <h3>Shipping one codebase with a whole team</h3>
+            <p>
+              This was my first time building one project with several people at once, and Git
+              stopped being a save button and became how the team talked. Every task got its own
+              branch, small commits and a pull request with screenshots, and a teammate reviewed
+              it before it was squash-merged into main. I learned to keep my edits to shared files
+              small so everyone's work merged cleanly, and to treat "no new lint errors" as part
+              of done.
+            </p>
+            <p>
+              Getting there meant real setup on Windows: installing Git, fixing my PATH, setting
+              my identity, cloning instead of downloading a ZIP, and sorting out a 403 by getting
+              collaborator access. One of my commits once went in empty because I hadn't saved the
+              file. Now I run <code>git diff --stat</code> before every commit.
+            </p>
+          </li>
+          <li class="panel learned">
+            <h3>The server is the referee</h3>
+            <p>
+              Our golden rule was that no component adds up scores, picks a die value or decides
+              a winner. The browser only asks and displays. That even applies to my computer
+              opponent: it uses the same <code>roll()</code> and <code>bank()</code> calls as a
+              human player, so it can never cheat.
+            </p>
+          </li>
+          <li class="panel learned">
+            <h3>Remembering the previous render with useRef</h3>
+            <p>
+              When the computer banks, the server's message and the turn change arrive in the
+              same update, so its last move would vanish before anyone could read it. A
+              <code>useRef</code> holding "whose turn was it before?" was the only way to keep the
+              computer's recap on screen after its turn ended.
+            </p>
+          </li>
+        </ol>
+
+        <div class="button-row project-end">
+          <a class="btn btn-primary" href="index.html#projects">Back to projects</a>
+          <a class="btn" href="index.html#contact">Contact me</a>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ========== Footer ========== -->
+  <footer class="site-footer">
+    <div class="container">
+      <!-- Status bar, like a game HUD. The clock is filled in by JavaScript. -->
+      <ul class="hud">
+        <li>Location: Lagos</li>
+        <li>Local time: <span class="hud-clock">WAT</span></li>
+        <li>Status: <span class="hud-ok">open to work</span></li>
+      </ul>
+
+      <div class="footer-inner">
+        <p>&copy; 2026 Chinonso Ugwu</p>
+        <nav aria-label="Legal">
+          <ul class="nav-list">
+            <li><a href="privacy.html">Privacy policy</a></li>
+            <li><a href="terms.html">Terms and conditions</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Achievement popups appear here -->
+  <div class="toasts" role="status" aria-live="polite"></div>
+</body>
+</html>

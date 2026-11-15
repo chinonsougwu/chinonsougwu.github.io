@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy policy | Chinonso Ugwu</title>
+  <meta name="description" content="Privacy policy for Chinonso Ugwu's portfolio: no accounts, no cookies, no tracking.">
+
+  <link rel="icon" href="favicon.ico" sizes="32x32">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+
+  <!-- Fonts are self-hosted in /fonts and loaded inside style.css -->
+  <link rel="preload" href="fonts/press-start-2p-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- defer: scripts run after the HTML has loaded, in this order -->
+  <script src="js/sound.js" defer></script>
+  <script src="js/main.js" defer></script>
+</head>
+<body data-page="legal">
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <!-- 3D grid background: a tilted floor with slowly moving lines, fixed behind the page -->
+  <div class="bg-grid" aria-hidden="true">
+    <div class="bg-floor">
+      <div class="bg-lines"></div>
+    </div>
+  </div>
+
+  <!-- ========== Header and navigation ========== -->
+  <header class="site-header">
+    <div class="container header-inner">
+      <a class="logo" href="index.html" aria-label="Chinonso Ugwu, home page">CU</a>
+
+      <nav aria-label="Main">
+        <ul class="nav-list">
+          <li><a href="index.html#about">About</a></li>
+          <li><a href="index.html#projects">Projects</a></li>
+          <li><a href="index.html#contact">Contact</a></li>
+        </ul>
+      </nav>
+
+      <!-- Hidden until JavaScript loads, because it only works with JavaScript -->
+      <button class="sound-toggle" type="button" aria-pressed="true" hidden>Sound: on</button>
+    </div>
+  </header>
+
+  <main id="main">
+
+    <section class="title-screen project-top" aria-labelledby="privacy-title">
+      <div class="container">
+        <nav class="breadcrumb" aria-label="Breadcrumb">
+          <ol>
+            <li><a href="index.html">Home</a></li>
+            <li><span aria-current="page">Privacy policy</span></li>
+          </ol>
+        </nav>
+        <p class="eyebrow">Fine print</p>
+        <h1 id="privacy-title">Privacy policy</h1>
+        <p class="lead">Last updated: 15 November 2026</p>
+      </div>
+    </section>
+
+    <div class="section">
+      <div class="container">
+        <div class="panel legal">
+          <section aria-labelledby="p-short">
+            <h2 id="p-short">The short version</h2>
+            <p>
+              This is my personal portfolio. It has no accounts, no forms, no cookies,
+              no analytics and no ads. I don't collect any information about you.
+            </p>
+          </section>
+
+          <section aria-labelledby="p-browser">
+            <h2 id="p-browser">What your browser stores</h2>
+            <p>
+              To remember your choices, the site saves a few small settings in your own
+              browser. They never leave your device and I can't see them.
+            </p>
+            <ul>
+              <li><strong>Sound on or off</strong>, so the site remembers your choice next time.</li>
+              <li><strong>Achievements you've unlocked</strong>, so each one only pops up once.</li>
+              <li><strong>Which cartridges are out</strong> in the claw machine. This is cleared when you close the tab.</li>
+            </ul>
+            <p>
+              You can delete these at any time by clearing this site's data in your browser settings.
+            </p>
+          </section>
+
+          <section aria-labelledby="p-hosting">
+            <h2 id="p-hosting">Hosting</h2>
+            <p>
+              This site is hosted on GitHub Pages. GitHub logs the IP address of every visitor
+              for security purposes, whether or not they have a GitHub account. I don't have
+              access to those logs. You can read how GitHub handles this data in the
+              <a href="https://docs.github.com/en/site-policy/privacy-policies/github-general-privacy-statement">GitHub General Privacy Statement</a>.
+            </p>
+          </section>
+
+          <section aria-labelledby="p-third">
+            <h2 id="p-third">Other websites</h2>
+            <p>
+              Fonts, sounds and images all load from this site itself, so browsing it doesn't
+              send requests to other companies.
+            </p>
+            <p>
+              Some links lead elsewhere, such as GitHub, WhatsApp or your email app. Once you
+              follow one, that service's own privacy policy applies.
+            </p>
+          </section>
+
+          <section aria-labelledby="p-contact">
+            <h2 id="p-contact">If you contact me</h2>
+            <p>
+              If you email or message me through the links in the
+              <a href="index.html#contact">contact section</a>, I'll only use your details to
+              reply to you. I won't share them or add you to any mailing list.
+            </p>
+          </section>
+
+          <section aria-labelledby="p-changes">
+            <h2 id="p-changes">Changes</h2>
+            <p>
+              If anything here changes, I'll update this page and the date at the top.
+            </p>
+          </section>
+        </div>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- ========== Footer ========== -->
+  <footer class="site-footer">
+    <div class="container">
+      <!-- Status bar, like a game HUD. The clock is filled in by JavaScript. -->
+      <ul class="hud">
+        <li>Location: Lagos</li>
+        <li>Local time: <span class="hud-clock">WAT</span></li>
+        <li>Status: <span class="hud-ok">open to work</span></li>
+      </ul>
+
+      <div class="footer-inner">
+        <p>&copy; 2026 Chinonso Ugwu</p>
+        <nav aria-label="Legal">
+          <ul class="nav-list">
+            <li><a href="privacy.html">Privacy policy</a></li>
+            <li><a href="terms.html">Terms and conditions</a></li>
+          </ul>
+        </nav>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Achievement popups appear here -->
+  <div class="toasts" role="status" aria-live="polite"></div>
+</body>
+</html>

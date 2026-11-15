@@ -1,0 +1,17 @@
+Sounds in this folder
+
+All files were downloaded from Pixabay (pixabay.com) and are used under the
+Pixabay Content License: free to use, no attribution required.
+They were trimmed and their volume adjusted for this site.
+
+music.mp3   "Jazzy Hip Hop Upbeat (Version 7, Joyful Mood)" by bombinsound (Pixabay 631769)
+            Cut to its first 9 bars (22.5 seconds) so it loops on the beat.
+select.wav  "UI Sounds Pack 4 (13)" by 47313572 (Pixabay 359739)
+click.wav   "Modern Digital Interface Click Sound" by chrysalyn (Pixabay 608396)
+            First click only.
+move.wav    "Moving Tools 3" by freesound_community (Pixabay 40372)
+            First 0.6 seconds.
+claw.wav    "Item Pickup Game UI Collect SFX" by coghezzi (Pixabay 553942)
+pop.wav     "Chest Opening" by freesound_community (Pixabay 87569)
+            First 1.2 seconds.
+pack.wav    "Placing Cardboard Box" by oxidvideos (Pixabay 453025)
