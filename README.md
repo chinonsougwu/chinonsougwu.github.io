@@ -2,12 +2,12 @@
 
 My personal developer portfolio, built as a retro arcade game.
 
--Name:Ugwu Chinonso Onochie james 
--Matric number:23120111052
--Course:CSC 419, Advances in Web, Mobile and Blockchain Development
--Assignment:Personal Portfolio Website (individual)
--Live site:https://chinonsougwu.github.io/
--Repository: https://github.com/chinonsougwu/chinonsougwu.github.io
+- Name:Ugwu Chinonso Onochie james 
+- Matric number:23120111052
+- Course:CSC 419, Advances in Web, Mobile and Blockchain Development
+- Assignment:Personal Portfolio Website (individual)
+- Live site:https://chinonsougwu.github.io/
+- Repository: https://github.com/chinonsougwu/chinonsougwu.github.io
 
 
 # Built with
