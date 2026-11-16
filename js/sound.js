@@ -139,15 +139,32 @@ const Sound = (function () {
     return audioCtx !== null && audioCtx.state === "running";
   }
 
-  // The first click, tap or key press anywhere starts audio and the music
-  function unlock() {
-    window.removeEventListener("pointerdown", unlock);
-    window.removeEventListener("keydown", unlock);
-    getContext();
-    if (on) startMusic();
+  // The first click, tap or key press anywhere starts audio and the music.
+  // Browsers only allow this from certain events. On phones the start of a
+  // touch (pointerdown) doesn't count, only the end of it (pointerup, touchend),
+  // so listen for all of them and keep listening until audio is really running.
+  const UNLOCK_EVENTS = ["pointerdown", "pointerup", "touchend", "click", "keydown"];
+  const LISTEN = { capture: true, passive: true };
+
+  function stopListening() {
+    UNLOCK_EVENTS.forEach(function (type) {
+      window.removeEventListener(type, unlock, LISTEN);
+    });
   }
-  window.addEventListener("pointerdown", unlock);
-  window.addEventListener("keydown", unlock);
+
+  function unlock() {
+    const ctx = getContext(); // creates the context and asks it to resume
+    if (!ctx) {
+      stopListening(); // very old browser: nothing to unlock
+      return;
+    }
+    if (on) startMusic();
+    if (ctx.state === "running") stopListening();
+  }
+
+  UNLOCK_EVENTS.forEach(function (type) {
+    window.addEventListener(type, unlock, LISTEN);
+  });
 
   // Pause everything while the tab is in the background
   document.addEventListener("visibilitychange", function () {
