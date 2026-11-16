@@ -88,6 +88,7 @@
 
   /* Motion: short and snappy, like a menu cursor */
   --speed: 120ms;
+  --reveal-speed: 800ms;       /* how long a block takes to slide in as you scroll */
 }
 
 /* ---------- 2. Reset ---------- */
@@ -151,43 +152,49 @@ select {
 /* The tilted floor. It stays still; only the lines inside it move. */
 .bg-floor {
   position: absolute;
-  left: -150%;
-  right: -150%;
+  left: -80%;
+  right: -80%;
   bottom: 0;
-  height: 3000px;
-  overflow: hidden;
+  /* Tall enough to reach the top of a tall screen, plus one square,
+     because the floor slides one square toward you on each loop */
+  height: calc(2400px + var(--grid-size));
   /* Hinged at the bottom of the screen and tilted back */
   transform-origin: 50% 100%;
   transform: rotateX(35deg);
-  /* The far end fades into the dark */
-  -webkit-mask-image: linear-gradient(to top, #000 5%, transparent 55%);
-  mask-image: linear-gradient(to top, #000 5%, transparent 55%);
+  /* The whole floor slides toward you by one square, then starts again.
+     Moving the floor (not the lines inside it) lets the graphics card do it
+     without redrawing anything, which keeps scrolling smooth. */
+  animation: grid-drift 9s linear infinite;
+  will-change: transform;
 }
 
-/* The grid lines. This layer is one square taller than the floor, and slides
-   down by exactly one square before starting again, so the loop is seamless.
-   Moving it with transform keeps the animation smooth and light on the computer. */
+/* The far end fades into the dark. This is a still gradient laid over the
+   moving floor, which is much lighter for the browser than masking it. */
+.bg-grid::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, var(--color-screen) 0%, var(--color-screen) 6%, transparent 60%);
+}
+
+/* The grid lines, drawn once and never redrawn */
 .bg-lines {
   position: absolute;
-  left: 0;
-  right: 0;
-  top: calc(-1 * var(--grid-size));
-  bottom: 0;
+  inset: 0;
   background-image:
     linear-gradient(var(--color-grid) 2px, transparent 2px),
     linear-gradient(90deg, var(--color-grid) 2px, transparent 2px);
   background-size: var(--grid-size) var(--grid-size);
   background-position: 50% 0;
-  animation: grid-drift 9s linear infinite;
-  will-change: transform;
 }
 
+/* Sliding by exactly one square makes the loop seamless */
 @keyframes grid-drift {
   from {
-    transform: translateY(0);
+    transform: rotateX(35deg) translateY(0);
   }
   to {
-    transform: translateY(var(--grid-size));
+    transform: rotateX(35deg) translateY(var(--grid-size));
   }
 }
 
@@ -1378,6 +1385,24 @@ code {
 
 .legal li::marker {
   color: var(--color-coin);
+}
+
+/* ---------- 20. Scroll reveal ----------
+   JavaScript adds .reveal to blocks below the screen, then .is-revealed the
+   first time each one scrolls into view, and removes both once it has arrived.
+   Without JavaScript neither class is added, so everything shows normally. */
+.reveal {
+  opacity: 0;
+  transform: translateX(-48px);
+}
+
+.reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+  /* Gentle curves: the movement is spread across the whole time, slowing only at the end */
+  transition:
+    opacity calc(var(--reveal-speed) * 0.75) linear var(--reveal-delay, 0ms),
+    transform var(--reveal-speed) cubic-bezier(0.25, 0.46, 0.45, 0.94) var(--reveal-delay, 0ms);
 }
 
 /* ---------- Tablet: 48rem (768px) and up ---------- */

@@ -7,6 +7,7 @@
      4. Live Lagos clock in the footer status bar
      5. Achievements
      6. Claw machine (projects section)
+     7. Scroll reveal (blocks slide in from the left, once, as you scroll)
    Each part checks that its HTML exists first, so this
    one file works on every page of the site.
    ========================================================= */
@@ -706,6 +707,69 @@ const Achievements = (function () {
   restoreState();
   renderEmptySlots();
   update();
+})();
+
+/* ---------- 7. Scroll reveal ----------
+   Blocks slide in from the left the first time they scroll into view, then
+   go back to being completely normal. It happens once per visit: scrolling
+   back up doesn't replay it.
+   Only blocks that start below the screen are prepared, so nothing visible on
+   load ever disappears, and if this script doesn't run, everything simply shows. */
+(function () {
+  if (reduceMotion || !("IntersectionObserver" in window)) return;
+
+  // The blocks that slide in. The cartridge slots are left out on purpose:
+  // hiding them would also hide cartridges flying out of the claw machine.
+  const SELECTOR = [
+    "main .section .level-heading",
+    "main .section .section-intro",
+    "main .section .panel",
+    "main .section .claw-machine",
+    "main .section .feature",
+    "main .section .shot",
+    "main .section .tech-table",
+    "main .section .project-end",
+    "main .project-shot"
+  ].join(", ");
+
+  const STAGGER = 200; // ms between blocks that arrive together
+  const MAX_STEPS = 6; // so a long list never waits too long
+
+  // How long one slide takes: read from --reveal-speed in style.css
+  const speed = parseFloat(getComputedStyle(document.documentElement).getPropertyValue("--reveal-speed")) || 1200;
+
+  function pageOrder(a, b) {
+    return a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1;
+  }
+
+  const observer = new IntersectionObserver(function (entries) {
+    // Blocks that arrive together go in page order: heading first, then the rest
+    const arriving = entries
+      .filter(function (entry) { return entry.isIntersecting; })
+      .map(function (entry) { return entry.target; })
+      .sort(pageOrder);
+
+    arriving.forEach(function (block, i) {
+      observer.unobserve(block); // once only
+      const delay = Math.min(i, MAX_STEPS) * STAGGER;
+      block.style.setProperty("--reveal-delay", delay + "ms");
+      block.classList.add("is-revealed");
+
+      // Afterwards, remove everything so the block is back to normal
+      setTimeout(function () {
+        block.classList.remove("reveal", "is-revealed");
+        block.style.removeProperty("--reveal-delay");
+      }, delay + speed + 50);
+    });
+  }, { rootMargin: "0px 0px -8% 0px", threshold: 0 });
+
+  const screenBottom = window.innerHeight;
+  document.querySelectorAll(SELECTOR).forEach(function (block) {
+    // Already on screen when the page opens? Leave it alone.
+    if (block.getBoundingClientRect().top < screenBottom) return;
+    block.classList.add("reveal");
+    observer.observe(block);
+  });
 })();
 
 /* ---------- Achievement triggers that belong to no single feature ---------- */
